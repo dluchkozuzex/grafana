@@ -112,6 +112,21 @@ async function fetchDashboard(
       case DashboardRouteInfo.New: {
         return getNewDashboardModelData(args.urlFolderId);
       }
+      case DashboardRouteInfo.NotFound: {
+        // load home dash
+        const dashDTO: DashboardDTO = await backendSrv.get('/api/dashboards/404');
+
+        // if above all is cancelled it will return an array
+        if (Array.isArray(dashDTO)) {
+          return null;
+        }
+
+        // disable some actions on the default home dashboard
+        dashDTO.meta.canSave = false;
+        dashDTO.meta.canShare = false;
+        dashDTO.meta.canStar = false;
+        return dashDTO;
+      }
       default:
         throw { message: 'Unknown route ' + args.routeInfo };
     }

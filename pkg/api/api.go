@@ -298,6 +298,7 @@ func (hs *HTTPServer) registerRoutes() {
 
 			dashboardRoute.Post("/db", bind(models.SaveDashboardCommand{}), Wrap(hs.PostDashboard))
 			dashboardRoute.Get("/home", Wrap(hs.GetHomeDashboard))
+			dashboardRoute.Get("/404", Wrap(hs.GetNotFound))
 			dashboardRoute.Get("/tags", GetDashboardTags)
 			dashboardRoute.Post("/import", bind(dtos.ImportDashboardCommand{}), Wrap(ImportDashboard))
 

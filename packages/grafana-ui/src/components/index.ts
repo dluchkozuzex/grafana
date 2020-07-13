@@ -88,6 +88,7 @@ export {
   LegendPlacement,
   LegendDisplayMode,
 } from './Legend/Legend';
+export { LegendSeriesIcon } from './Legend/LegendSeriesIcon';
 
 export { Alert, AlertVariant } from './Alert/Alert';
 export { GraphSeriesToggler, GraphSeriesTogglerAPI } from './Graph/GraphSeriesToggler';

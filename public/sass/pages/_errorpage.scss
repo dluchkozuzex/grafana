@@ -1,7 +1,14 @@
 //
 // Layout
 //
-
+.page-error{
+  .dashboard-content{
+    padding: 0px;
+  }
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin-bottom: -45px;
+}
 .error-container {
   display: flex;
   flex-direction: row;
@@ -20,23 +27,33 @@
 .error-space-between {
   justify-content: space-between;
 }
-
+.error-legend{
+  width: calc(100% - 99px);
+  margin-left: 40px;
+}
 .graph-box {
-  width: 62%;
-  padding: $space-xl $space-md;
+  padding: $space-md $space-md;
 }
 
 .info-box {
   width: 38%;
   padding: $space-xl $space-md;
 }
-
+.error-title{
+  text-align: center;
+  h3{
+    font-size: 24px;
+  }
+}
 .graph-percentage {
   padding: 0 0 18px;
 }
 
 .image-box {
   padding: $space-sm;
+  img{
+    height: 240px;
+  }
 }
 
 .left-margin {

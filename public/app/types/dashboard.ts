@@ -45,6 +45,7 @@ export enum DashboardRouteInfo {
   New = 'new-dashboard',
   Normal = 'normal-dashboard',
   Scripted = 'scripted-dashboard',
+  NotFound = '404',
 }
 
 export enum DashboardInitPhase {

@@ -360,6 +360,47 @@ func (hs *HTTPServer) GetHomeDashboard(c *models.ReqContext) Response {
 	return JSON(200, &dash)
 }
 
+func (hs *HTTPServer) GetNotFound(c *models.ReqContext) Response {
+	prefsQuery := models.GetPreferencesWithDefaultsQuery{User: c.SignedInUser}
+	if err := hs.Bus.Dispatch(&prefsQuery); err != nil {
+		return Error(500, "Failed to get preferences", err)
+	}
+
+	if prefsQuery.Result.HomeDashboardId != 0 {
+		slugQuery := models.GetDashboardRefByIdQuery{Id: prefsQuery.Result.HomeDashboardId}
+		err := hs.Bus.Dispatch(&slugQuery)
+		if err == nil {
+			url := models.GetDashboardUrl(slugQuery.Result.Uid, slugQuery.Result.Slug)
+			dashRedirect := dtos.DashboardRedirect{RedirectUri: url}
+			return JSON(200, &dashRedirect)
+		}
+		log.Warn("Failed to get slug from database, %s", err.Error())
+	}
+
+	filePath := hs.Cfg.DefaultHomeDashboardPath
+	if filePath == "" {
+		filePath = path.Join(hs.Cfg.StaticRootPath, "dashboards/404.json")
+	}
+
+	file, err := os.Open(filePath)
+	if err != nil {
+		return Error(500, "Failed to load home dashboard", err)
+	}
+	defer file.Close()
+
+	dash := dtos.DashboardFullWithMeta{}
+	dash.Meta.IsHome = true
+	dash.Meta.CanEdit = c.SignedInUser.HasRole(models.ROLE_EDITOR)
+	dash.Meta.FolderTitle = "General"
+
+	jsonParser := json.NewDecoder(file)
+	if err := jsonParser.Decode(&dash.Dashboard); err != nil {
+		return Error(500, "Failed to load home dashboard", err)
+	}
+
+	return JSON(200, &dash)
+}
+
 func addGettingStartedPanelToHomeDashboard(dash *simplejson.Json) {
 	panels := dash.Get("panels").MustArray()
 
